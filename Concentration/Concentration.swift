@@ -10,8 +10,12 @@ import Foundation
 
 class Concentration
 {
+    private let matchPoint = 2
+    private let penalty = 1
     private(set) var cards = [Card]()
-    
+    private(set) var flipCounts = 0
+    private(set) var score = 0
+    private(set) static var highScore = 0
     private var indexOfOneAndOnlyFaceUpCard: Int? {
         get {
             var foundIndex: Int?
@@ -42,6 +46,16 @@ class Concentration
                 if cards[matchIndex].identifier == cards[index].identifier {
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
+                    score += matchPoint
+                } else {
+                    if cards[index].isSeen {
+                        score -= penalty
+                    }
+                    if cards[matchIndex].isSeen {
+                        score -= penalty
+                    }
+                    cards[index].isSeen = true
+                    cards[matchIndex].isSeen = true
                 }
                 cards[index].isFaceUp = true
             } else {
@@ -52,16 +66,25 @@ class Concentration
                 
             }
         }
+        flipCounts += 1
+        if score > Concentration.highScore {
+            Concentration.highScore = score
+        }
     }
     
     init(numberOfPairs: Int){
         assert(numberOfPairs > 0, "Concentration.numberOfPairs(\(numberOfPairs)) Number of pairs must be at least one")
+        var unshuffledCards = [Card]()
         for _ in 1...numberOfPairs{
             let card = Card()
-            cards += [card, card]
+            unshuffledCards += [card, card]
         }
         
-        //TODO: Shuffle the cards
+        while !unshuffledCards.isEmpty {
+            let randomIndex = unshuffledCards.count.arc4random
+            let card = unshuffledCards.remove(at: randomIndex)
+            cards.append(card)
+        }
         
     }
 }
