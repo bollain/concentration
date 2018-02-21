@@ -47,7 +47,7 @@ class ViewController: UIViewController {
     }
     
     private var emojiChoices = [String]()
-    private var emoji = [Int:String]()
+    private var emoji = [Card:String]()
     
     
     @IBOutlet private var cardButtons: [UIButton]!
@@ -84,7 +84,7 @@ class ViewController: UIViewController {
         game = Concentration(numberOfPairs: numberOfPairsOfCards)
         theme = newTheme
         emojiChoices = theme.emoji
-        emoji = [Int:String]()
+        emoji = [Card:String]()
         flipsCountLabel.text = "Flips: \(game.flipCounts)"
         scoreCountsLabel.text = "Score: \(game.score)"
         highScoreLabel.text = "High score: \(Concentration.highScore)"
@@ -110,17 +110,14 @@ class ViewController: UIViewController {
         
     }
     
- 
-    
     private func emoji(for card: Card) -> String {
-        if emoji[card.identifier] == nil, emojiChoices.count > 0 {
-            emoji[card.identifier] = emojiChoices.remove(at: emojiChoices.count.arc4random)
+        if emoji[card] == nil, emojiChoices.count > 0 {
+            emoji[card] = emojiChoices.remove(at: emojiChoices.count.arc4random)
         }
         
-        return emoji[card.identifier] ?? "?"
+        return emoji[card] ?? "?"
         
     }
-    
 }
 
 extension Int {
